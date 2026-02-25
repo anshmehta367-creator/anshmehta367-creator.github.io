@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BitStorm — My Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --blue-900: #0c2340;
+  --blue-800: #123a6b;
+  --blue-700: #174f96;
+  --blue-600: #1a5fa8;
+  --blue-400: #3b8fd4;
+  --blue-200: #b8d8f5;
+  --blue-100: #dceefb;
+  --blue-50:  #f0f7fd;
+  --white:    #ffffff;
+  --text-primary: #0d1f35;
+  --text-secondary: #4a6785;
+  --text-muted: #8aabca;
+  --border: #d0e4f4;
+  --sidebar-w: 240px;
+  --nav-h: 64px;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--blue-50);
+  color: var(--text-primary);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: var(--blue-800);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.04);
+  bottom: -80px; right: -120px;
+  pointer-events: none;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+
+.brand-icon svg { width: 60px; height: 60px; stroke: var(--white); }
+.brand-name { font-size: 20px; font-weight: 600; color: var(--white); letter-spacing: 0.02em; }
+
+.sidebar-nav {
+  flex: 1;
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.15s;
+  color: rgba(255,255,255,0.5);
+  font-size: 13.5px;
+  font-weight: 400;
+  border: none; background: none; width: 100%; text-align: left;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.nav-item svg { width: 16px; height: 16px; stroke: currentColor; flex-shrink: 0; }
+.nav-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.8); }
+.nav-item.active { background: rgba(255,255,255,0.12); color: var(--white); font-weight: 500; }
+
+.nav-section-label {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  padding: 14px 12px 6px;
+  font-weight: 500;
+}
+
+.sidebar-footer {
+  padding: 16px 14px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.connect-btn {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 9px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.07);
+  color: var(--white);
+  font-size: 13px; font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.connect-btn svg { width: 15px; height: 15px; stroke: var(--blue-200); }
+.connect-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); }
+.conn-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); margin-left: auto; flex-shrink: 0; }
+
+/* ── Main ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Topbar */
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0; z-index: 50;
+}
+
+.topbar-left h1 { font-size: 17px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.01em; }
+.topbar-left p  { font-size: 12px; color: var(--text-muted); font-weight: 300; }
+.topbar-right   { display: flex; align-items: center; gap: 14px; }
+
+.time-badge {
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: var(--blue-50);
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 400;
+}
+
+/* Content */
+.content { padding: 28px 32px 40px; flex: 1; }
+
+/* Greeting */
+.greeting {
+  margin-bottom: 28px;
+  animation: fadeSlideIn 0.6s ease both;
+}
+
+.greeting h2 { font-size: 22px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.02em; }
+.greeting h2 em { font-style: italic; color: var(--blue-600); font-family: 'Playfair Display', serif; font-weight: 400; }
+.greeting p { font-size: 13.5px; color: var(--text-secondary); margin-top: 3px; font-weight: 300; }
+
+/* Two-column layout */
+.profile-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── Avatar card ── */
+.avatar-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(26,95,168,0.05);
+  animation: fadeSlideIn 0.5s ease 0.05s both;
+}
+
+.avatar-header {
+  background: var(--blue-800);
+  padding: 32px 24px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-header::before {
+  content: '';
+  position: absolute;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.05);
+  top: -60px; right: -60px;
+  pointer-events: none;
+}
+
+.avatar-circle {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  border: 2px solid rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+}
+
+.avatar-circle svg { width: 32px; height: 32px; stroke: var(--white); }
+
+.avatar-name {
+  font-size: 16px; font-weight: 600;
+  color: var(--white); letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+
+.avatar-email {
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  font-weight: 300;
+}
+
+.avatar-body { padding: 20px 24px; }
+
+/* Quick info rows */
+.quick-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--blue-50);
+  font-size: 13px;
+}
+
+.quick-row:last-child { border-bottom: none; }
+.quick-label { color: var(--text-muted); font-weight: 400; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; }
+.quick-val   { color: var(--text-primary); font-weight: 500; font-size: 13px; }
+
+/* ── Info card ── */
+.info-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(26,95,168,0.05);
+  animation: fadeSlideIn 0.5s ease 0.1s both;
+}
+
+/* Section label */
+.section-label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 18px 24px 0;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* Profile fields grid */
+.fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding: 4px 0;
+}
+
+.field-item {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--blue-50);
+  border-right: 1px solid var(--blue-50);
+  animation: fadeSlideIn 0.4s ease both;
+}
+
+.field-item:nth-child(even) { border-right: none; }
+.field-item:nth-last-child(-n+2) { border-bottom: none; }
+
+/* Email spans full width */
+.field-item.full {
+  grid-column: 1 / -1;
+  border-right: none;
+}
+
+.field-label {
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  display: flex; align-items: center; gap: 7px;
+}
+
+.field-label svg { width: 12px; height: 12px; stroke: var(--blue-400); flex-shrink: 0; }
+
+.field-value {
+  font-size: 14px; font-weight: 500;
+  color: var(--text-primary);
+}
+
+.field-value.empty { color: var(--text-muted); font-style: italic; font-weight: 300; }
+
+/* Action section */
+.actions-section {
+  padding: 20px 24px;
+  border-top: 1px solid var(--border);
+  background: var(--blue-50);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 9px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 7px;
+  transition: all 0.2s;
+}
+
+.btn svg { width: 14px; height: 14px; stroke: currentColor; }
+
+.btn-primary {
+  background: var(--blue-800);
+  border-color: var(--blue-800);
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background: var(--blue-900);
+  box-shadow: 0 6px 20px rgba(18,58,107,0.25);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--white);
+  color: var(--text-secondary);
+}
+
+.btn-secondary:hover {
+  border-color: var(--blue-400);
+  color: var(--blue-600);
+  box-shadow: 0 2px 8px rgba(26,95,168,0.1);
+}
+
+.btn-danger {
+  background: var(--white);
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.btn-danger:hover {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  box-shadow: 0 2px 8px rgba(239,68,68,0.1);
+}
+
+/* Section divider */
+.section-divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+/* Security note */
+.security-note {
+  display: flex; align-items: center; gap: 6px;
+  padding-top: 20px;
+  animation: fadeSlideIn 0.5s ease 0.2s both;
+}
+
+.security-note svg { width: 12px; height: 12px; stroke: var(--text-muted); flex-shrink: 0; }
+.security-note span { font-size: 11px; color: var(--text-muted); font-weight: 300; }
+
+/* Animation */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.field-item:nth-child(1) { animation-delay: 0.12s; }
+.field-item:nth-child(2) { animation-delay: 0.15s; }
+.field-item:nth-child(3) { animation-delay: 0.18s; }
+.field-item:nth-child(4) { animation-delay: 0.21s; }
+.field-item:nth-child(5) { animation-delay: 0.24s; }
+
+/* Responsive */
+@media (max-width: 960px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .profile-layout { grid-template-columns: 1fr; }
+  .content { padding: 20px 16px 32px; }
+  .topbar { padding: 0 16px; }
+}
+
+@media (max-width: 600px) {
+  .fields-grid { grid-template-columns: 1fr; }
+  .field-item { border-right: none; }
+  .field-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--blue-50); }
+  .field-item:last-child { border-bottom: none; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">
+      <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#03070d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3689d7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <path d="M100 170 C 100 170 30 120 30 75 A 35 35 0 0 1 100 50 A 35 35 0 0 1 170 75 C 170 120 100 170 100 170 Z" 
+        fill="none" 
+        stroke="url(#heartGradient)" 
+        stroke-width="20" 
+        stroke-linejoin="round"/>
+        
+  <path d="M20 100 H 60 L 75 70 L 95 130 L 115 40 L 135 100 H 180" 
+        fill="none" 
+        stroke="#63b3ed" 
+        stroke-width="10" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+</svg>
+    </div>
+    <span class="brand-name">BitStorm</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Monitor</div>
+    <button class="nav-item" onclick="showhome()">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+      </svg>
+      Dashboard
+    </button>
+    <button class="nav-item" onclick="showhistory()">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      Health History
+    </button>
+
+    <div class="nav-section-label">Account</div>
+    <button class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+      My Profile
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="connect-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 6a6 6 0 0 1 6 6"/><path d="M12 10a2 2 0 0 1 2 2"/>
+        <circle cx="4.5" cy="18.5" r="2.5"/>
+      </svg>
+      Connect Device
+      <span class="conn-dot"></span>
+    </button>
+  </div>
+</aside>
+
+<!-- ── Main ── -->
+<div class="main">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1>My Profile</h1>
+      <p>Account details &amp; settings</p>
+    </div>
+    <div class="topbar-right">
+      <div class="time-badge" id="clockBadge">--:-- --</div>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <div class="greeting">
+      <h2>Hello, <em id="greetName">there</em></h2>
+      <p>Manage your personal details and account preferences below.</p>
+    </div>
+
+    <div class="profile-layout">
+
+      <!-- Avatar card -->
+      <div class="avatar-card">
+        <div class="avatar-header">
+          <div class="avatar-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <div class="avatar-name" id="avatarName">—</div>
+          <div class="avatar-email" id="avatarEmail">—</div>
+        </div>
+        <div class="avatar-body">
+          <div class="quick-row">
+            <span class="quick-label">Age</span>
+            <span class="quick-val" id="quickAge">—</span>
+          </div>
+          <div class="quick-row">
+            <span class="quick-label">Gender</span>
+            <span class="quick-val" id="quickGender">—</span>
+          </div>
+          <div class="quick-row">
+            <span class="quick-label">Phone</span>
+            <span class="quick-val" id="quickPhone">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info card -->
+      <div class="info-card">
+
+        <div class="section-label" style="margin-top:4px;">Personal Information</div>
+
+        <div class="fields-grid">
+
+          <div class="field-item">
+            <div class="field-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+              Full Name
+            </div>
+            <div class="field-value" id="profileName">—</div>
+          </div>
+
+          <div class="field-item">
+            <div class="field-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              Age
+            </div>
+            <div class="field-value" id="profileAge">—</div>
+          </div>
+
+          <div class="field-item">
+            <div class="field-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M18.66 5.34l1.41-1.41"/>
+              </svg>
+              Gender
+            </div>
+            <div class="field-value" id="profileGender">—</div>
+          </div>
+
+          <div class="field-item">
+            <div class="field-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 5.49 5.49l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 15.34"/>
+              </svg>
+              Phone Number
+            </div>
+            <div class="field-value" id="profilePhone">—</div>
+          </div>
+
+          <div class="field-item full">
+            <div class="field-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+              Email Address
+            </div>
+            <div class="field-value" id="profileEmail">—</div>
+          </div>
+
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-section">
+          <button class="btn btn-secondary" onclick="changepassword()">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Change Password
+          </button>
+          <button class="btn btn-danger" onclick="logout()">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Log Out
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+  </main>
+</div>
+
+<script>
+// ── Clock ──
+function updateClock() {
+  document.getElementById('clockBadge').textContent =
+    new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+updateClock(); setInterval(updateClock, 1000);
+
+// ── Load Profile ──
+function loadProfile() {
+  const name   = localStorage.getItem("storedName")   || "Not Available";
+  const age    = localStorage.getItem("storedAge")    || "Not Available";
+  const gender = localStorage.getItem("storedGender") || "Not Available";
+  const phone  = localStorage.getItem("storedPhone")  || "Not Available";
+  const email  = localStorage.getItem("storedEmail")  || "Not Available";
+
+  // Greeting
+  const firstName = name !== "Not Available" ? name.split(' ')[0] : "there";
+  document.getElementById('greetName').textContent = firstName;
+
+  // Avatar card
+  document.getElementById('avatarName').textContent  = name;
+  document.getElementById('avatarEmail').textContent = email;
+  document.getElementById('quickAge').textContent    = age;
+  document.getElementById('quickGender').textContent = gender;
+  document.getElementById('quickPhone').textContent  = phone;
+
+  // Info fields
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    el.textContent = val;
+    if (val === "Not Available") el.classList.add('empty');
+  };
+
+  set('profileName',   name);
+  set('profileAge',    age);
+  set('profileGender', gender);
+  set('profilePhone',  phone);
+  set('profileEmail',  email);
+}
+
+function logout() {
+  alert("Logged Out Successfully");
+  window.location.href = "loginclaude.html";
+}
+
+function changepassword() {
+  window.location.href = "changepasswordclaude.html";
+}
+
+function showhistory() { window.location.href = "historyclaude.html"; }
+function showhome()    { window.location.href = "homepageclaude.html"; }
+function showprofile() { window.location.href = "profileclaude.html"; }
+
+loadProfile();
+</script>
+
+</body>
+</html>
