@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BitStorm — Precision in Every Pulse</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --blue-900: #0c2340;
+  --blue-800: #123a6b;
+  --blue-700: #174f96;
+  --blue-600: #1a5fa8;
+  --blue-400: #3b8fd4;
+  --blue-300: #6db3e8;
+  --blue-200: #b8d8f5;
+  --blue-100: #dceefb;
+  --blue-50:  #f0f7fd;
+  --white:    #ffffff;
+  --text-primary: #0d1f35;
+  --text-secondary: #4a6785;
+  --text-muted: #8aabca;
+  --border: #d0e4f4;
+  --nav-h: 72px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--white);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* ─── NAVBAR ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 60px;
+  transition: background 0.4s, box-shadow 0.4s, backdrop-filter 0.4s;
+}
+
+nav.scrolled {
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+
+
+.nav-brand-icon svg { width: 60px; height: 50px; stroke: var(--white); }
+
+.nav-brand-name {
+  font-size: 18px; font-weight: 700;
+  color: var(--blue-900); letter-spacing: -0.02em;
+}
+.nav-brand-name2 {
+  font-size: 25px; font-weight: 700;
+  color: var(--white); letter-spacing: -0.02em;
+}
+
+.nav-links {
+  display: flex; align-items: center; gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 14px; font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0;
+  width: 0; height: 1.5px;
+  background: var(--blue-600);
+  transition: width 0.25s;
+}
+
+.nav-links a:hover { color: var(--blue-800); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-cta {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px; font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 9px;
+  border: none;
+  background: var(--blue-800);
+  color: var(--white);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.nav-cta:hover {
+  background: var(--blue-900);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(18,58,107,0.25);
+}
+
+/* ─── HERO ─── */
+#home {
+  min-height: 100vh;
+  background: var(--blue-900);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: calc(var(--nav-h) + 60px) 60px 80px;
+}
+
+/* Animated grid */
+#home::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(59,143,212,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,143,212,0.07) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridFade 3s ease forwards;
+}
+
+@keyframes gridFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Glow orbs */
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.orb-1 {
+  width: 600px; height: 600px;
+  background: rgba(59,143,212,0.18);
+  top: -200px; right: -100px;
+  animation: orbFloat 8s ease-in-out infinite;
+}
+
+.orb-2 {
+  width: 400px; height: 400px;
+  background: rgba(26,95,168,0.15);
+  bottom: -100px; left: -80px;
+  animation: orbFloat 10s ease-in-out infinite reverse;
+}
+
+@keyframes orbFloat {
+  0%,100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-30px) scale(1.05); }
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hero-left { display: flex; flex-direction: column; gap: 28px; }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(59,143,212,0.15);
+  border: 1px solid rgba(59,143,212,0.3);
+  border-radius: 30px;
+  padding: 6px 14px 6px 8px;
+  width: fit-content;
+  animation: fadeUp 0.8s ease 0.2s both;
+}
+
+.badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--blue-300);
+  box-shadow: 0 0 8px var(--blue-300);
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%,100% { box-shadow: 0 0 6px var(--blue-300); }
+  50%      { box-shadow: 0 0 14px var(--blue-300), 0 0 24px rgba(107,179,232,0.3); }
+}
+
+.hero-badge span {
+  font-size: 12px; font-weight: 500;
+  color: var(--blue-200); letter-spacing: 0.05em;
+}
+
+.hero-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(38px, 5vw, 62px);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  animation: fadeUp 0.8s ease 0.35s both;
+}
+
+.hero-heading em {
+  font-style: italic;
+  color: var(--blue-300);
+}
+
+.hero-tagline {
+  font-size: clamp(15px, 1.8vw, 18px);
+  color: rgba(255,255,255,0.5);
+  font-weight: 300;
+  line-height: 1.7;
+  max-width: 480px;
+  animation: fadeUp 0.8s ease 0.48s both;
+}
+
+.hero-actions {
+  display: flex; align-items: center; gap: 14px;
+  animation: fadeUp 0.8s ease 0.6s both;
+}
+
+.btn-hero-primary {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14.5px; font-weight: 600;
+  padding: 14px 32px;
+  border-radius: 10px;
+  border: none;
+  background: var(--blue-400);
+  color: var(--white);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.btn-hero-primary svg { width: 16px; height: 16px; stroke: currentColor; transition: transform 0.2s; }
+.btn-hero-primary:hover { background: var(--blue-300); box-shadow: 0 8px 28px rgba(59,143,212,0.4); transform: translateY(-2px); }
+.btn-hero-primary:hover svg { transform: translateX(3px); }
+
+.btn-hero-secondary {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 500;
+  padding: 14px 24px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+}
+
+.btn-hero-secondary:hover {
+  border-color: rgba(255,255,255,0.3);
+  color: var(--white);
+  background: rgba(255,255,255,0.06);
+}
+
+/* Hero stats */
+.hero-stats {
+  display: flex; gap: 32px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  animation: fadeUp 0.8s ease 0.72s both;
+}
+
+.hero-stat-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+
+.hero-stat-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+
+.hero-stat-label {
+  font-size: 11.5px; color: rgba(255,255,255,0.4);
+  font-weight: 400; margin-top: 2px;
+  text-transform: uppercase; letter-spacing: 0.07em;
+}
+
+/* Hero image */
+.hero-right {
+  position: relative;
+  animation: fadeLeft 1s ease 0.4s both;
+}
+
+@keyframes fadeLeft {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.hero-img-wrap {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+}
+
+.hero-img-wrap img {
+  width: 100%; height: 480px;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(18,58,107,0.3) 0%, transparent 60%);
+}
+
+/* Floating vitals card */
+.vitals-card {
+  position: absolute;
+  bottom: -24px; left: -32px;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  animation: cardFloat 5s ease-in-out infinite;
+  min-width: 200px;
+}
+
+@keyframes cardFloat {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+.vitals-card-label {
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--text-muted); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+
+.vitals-live-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+
+.vitals-row {
+  display: flex; align-items: baseline; gap: 5px;
+}
+
+.vitals-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px; font-weight: 700;
+  color: var(--blue-800); line-height: 1;
+}
+
+.vitals-unit { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+
+.vitals-status {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 500;
+  color: #15803d;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 20px;
+  padding: 3px 8px;
+  margin-top: 8px;
+}
+
+.vitals-status::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: #22c55e; }
+
+/* Floating SPO2 badge */
+.spo2-badge {
+  position: absolute;
+  top: 20px; right: -20px;
+  background: var(--blue-800);
+  border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow: 0 16px 40px rgba(12,35,64,0.4);
+  animation: cardFloat 6s ease-in-out infinite 1s;
+  text-align: center;
+}
+
+.spo2-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; font-weight: 700;
+  color: var(--white); line-height: 1;
+}
+
+.spo2-label {
+  font-size: 10px; color: var(--blue-200);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+
+/* ECG line decoration */
+.ecg-line {
+  position: absolute;
+  bottom: 32px; right: 16px;
+  opacity: 0.12;
+}
+
+.ecg-line svg { stroke: var(--blue-200); }
+
+/* Scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 32px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  animation: fadeUp 1s ease 1.2s both;
+  z-index: 2;
+}
+
+.scroll-indicator span { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.15em; text-transform: uppercase; }
+
+.scroll-mouse {
+  width: 22px; height: 34px;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: 11px;
+  display: flex; justify-content: center;
+  padding-top: 5px;
+}
+
+.scroll-wheel {
+  width: 3px; height: 6px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 2px;
+  animation: scrollDown 2s ease-in-out infinite;
+}
+
+@keyframes scrollDown {
+  0%   { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(10px); opacity: 0; }
+}
+
+/* ─── SECTION SHARED ─── */
+section { padding: 100px 60px; }
+
+.section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-eyebrow {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--blue-400);
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.section-eyebrow::before {
+  content: '';
+  width: 24px; height: 1.5px;
+  background: var(--blue-400);
+}
+
+.section-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(30px, 4vw, 46px);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.section-heading em { font-style: italic; color: var(--blue-600); }
+
+.section-sub {
+  font-size: 15.5px; color: var(--text-secondary);
+  font-weight: 300; line-height: 1.75;
+  max-width: 540px;
+}
+
+/* ─── FEATURES ─── */
+#features {
+  background: var(--blue-50);
+  position: relative;
+  overflow: hidden;
+}
+
+#features::before {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,143,212,0.07) 0%, transparent 70%);
+  top: -200px; right: -100px;
+  pointer-events: none;
+}
+
+.features-header { margin-bottom: 60px; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.feature-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 28px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s, transform 0.3s;
+  cursor: default;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--blue-600), var(--blue-300));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+}
+
+.feature-card:hover { box-shadow: 0 16px 40px rgba(26,95,168,0.12); transform: translateY(-4px); }
+.feature-card:hover::before { transform: scaleX(1); }
+
+.feature-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  background: var(--blue-50);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+  transition: background 0.3s;
+}
+
+.feature-card:hover .feature-icon {
+  background: var(--blue-100);
+}
+
+.feature-icon svg { width: 22px; height: 22px; stroke: var(--blue-600); }
+
+.feature-title {
+  font-size: 16px; font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px; letter-spacing: -0.01em;
+}
+
+.feature-desc {
+  font-size: 13.5px; color: var(--text-secondary);
+  line-height: 1.7; font-weight: 300;
+}
+
+/* Big feature card */
+.feature-card.big {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: center;
+  padding: 0;
+  overflow: hidden;
+}
+
+.feature-card.big .feature-card-content { padding: 32px 28px; }
+
+.feature-card.big img {
+  width: 100%; height: 100%;
+  min-height: 240px;
+  object-fit: cover;
+  display: block;
+}
+
+/* ─── HOW IT WORKS ─── */
+#about {
+  background: var(--white);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.about-img-wrap {
+  position: relative;
+  border-radius: 20px;
+  overflow: visible;
+}
+
+.about-img-main {
+  width: 100%;
+  border-radius: 20px;
+  height: 500px;
+  object-fit: cover;
+  box-shadow: 0 24px 60px rgba(26,95,168,0.15);
+  display: block;
+}
+
+.about-img-accent {
+  position: absolute;
+  bottom: -24px; right: -24px;
+  width: 200px; height: 200px;
+  border-radius: 16px;
+  object-fit: cover;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+  border: 4px solid var(--white);
+}
+
+.about-steps { margin-top: 36px; display: flex; flex-direction: column; gap: 24px; }
+
+.about-step {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.about-step:hover {
+  border-color: var(--border);
+  background: var(--blue-50);
+}
+
+.step-num-circle {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--blue-800);
+  color: var(--white);
+  font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(18,58,107,0.3);
+}
+
+.step-title {
+  font-size: 15px; font-weight: 600;
+  color: var(--text-primary); margin-bottom: 5px;
+}
+
+.step-desc {
+  font-size: 13px; color: var(--text-secondary);
+  font-weight: 300; line-height: 1.65;
+}
+
+/* ─── METRICS STRIP ─── */
+.metrics-strip {
+  background: var(--blue-800);
+  padding: 60px;
+}
+
+.metrics-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+}
+
+.metric-item { text-align: center; }
+
+.metric-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 46px; font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.metric-num span { font-size: 28px; color: var(--blue-300); }
+
+.metric-label {
+  font-size: 12px; color: rgba(255,255,255,0.45);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-top: 8px; font-weight: 400;
+}
+
+.metric-divider {
+  width: 1px;
+  background: rgba(255,255,255,0.1);
+  align-self: center;
+  height: 60px;
+}
+
+/* ─── TESTIMONIALS ─── */
+.testimonials {
+  background: var(--blue-50);
+  padding: 100px 60px;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 52px;
+}
+
+.testimonial-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.testimonial-card:hover {
+  box-shadow: 0 12px 30px rgba(26,95,168,0.1);
+  transform: translateY(-3px);
+}
+
+.stars {
+  display: flex; gap: 3px; margin-bottom: 16px;
+}
+
+.star { color: #f59e0b; font-size: 14px; }
+
+.testimonial-text {
+  font-size: 14px; color: var(--text-secondary);
+  line-height: 1.75; font-weight: 300;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.testimonial-author {
+  display: flex; align-items: center; gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--blue-50);
+}
+
+.author-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+}
+
+.author-name {
+  font-size: 13.5px; font-weight: 600;
+  color: var(--text-primary);
+}
+
+.author-role {
+  font-size: 11.5px; color: var(--text-muted);
+  font-weight: 300;
+}
+
+/* ─── CTA / SIGNUP SECTION ─── */
+#signup {
+  background: var(--white);
+  padding: 100px 60px;
+}
+
+.signup-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.signup-card {
+  background: var(--blue-800);
+  border-radius: 24px;
+  padding: 80px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.signup-card::before {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.05);
+  top: -200px; right: -150px;
+}
+
+.signup-card::after {
+  content: '';
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.04);
+  bottom: -100px; left: -60px;
+}
+
+.signup-card-cross {
+  position: absolute;
+  font-size: 180px;
+  color: rgba(255,255,255,0.04);
+  font-weight: 100;
+  line-height: 1;
+  top: -20px; right: 40px;
+  animation: floatUp 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.signup-left { position: relative; z-index: 1; }
+
+.signup-eyebrow {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--blue-300);
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.signup-eyebrow::before {
+  content: '';
+  width: 20px; height: 1.5px;
+  background: var(--blue-300);
+}
+
+.signup-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 3vw, 38px);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.signup-heading em { font-style: italic; color: var(--blue-200); }
+
+.signup-sub {
+  font-size: 14.5px; color: rgba(255,255,255,0.5);
+  font-weight: 300; line-height: 1.75;
+  margin-bottom: 32px;
+}
+
+.signup-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 600;
+  padding: 14px 32px;
+  border-radius: 10px;
+  border: none;
+  background: var(--white);
+  color: var(--blue-800);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.signup-btn:hover {
+  background: var(--blue-50);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.signup-btn svg { width: 15px; height: 15px; stroke: currentColor; transition: transform 0.2s; }
+.signup-btn:hover svg { transform: translateX(3px); }
+
+.signup-trust {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 20px;
+}
+
+.signup-trust svg { width: 13px; height: 13px; stroke: rgba(255,255,255,0.3); }
+.signup-trust span { font-size: 12px; color: rgba(255,255,255,0.35); font-weight: 300; }
+
+/* Signup right - feature list */
+.signup-right {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; gap: 16px;
+}
+
+.signup-feature {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 18px 20px;
+  transition: background 0.2s;
+}
+
+.signup-feature:hover { background: rgba(255,255,255,0.08); }
+
+.signup-feature-icon {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  background: rgba(59,143,212,0.2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.signup-feature-icon svg { width: 16px; height: 16px; stroke: var(--blue-200); }
+
+.signup-feature-title {
+  font-size: 13.5px; font-weight: 600;
+  color: var(--white); margin-bottom: 3px;
+}
+
+.signup-feature-desc {
+  font-size: 12px; color: rgba(255,255,255,0.4);
+  font-weight: 300; line-height: 1.5;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--blue-900);
+  padding: 40px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-brand {
+  display: flex; align-items: center; gap: 10px;
+}
+
+
+.footer-brand-icon svg { width: 29px; height: 29px; stroke: var(--blue-200); }
+.footer-brand-name { font-size: 18px; font-weight: 600; color: var(--white); }
+
+.footer-tagline {
+  font-size: 15px; font-style: italic;
+  color: rgba(255,255,255,0.3);
+  font-family: 'Playfair Display', serif;
+}
+
+.footer-copy {
+  font-size: 15px; color: rgba(255,255,255,0.25); font-weight: 300;
+}
+
+/* ─── SCROLL REVEAL ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatUp {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1024px) {
+  nav { padding: 0 30px; }
+  section, .metrics-strip, .testimonials, #signup { padding: 80px 30px; }
+  #home { padding: calc(var(--nav-h) + 40px) 30px 60px; }
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+  .hero-right { display: none; }
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .feature-card.big { grid-column: span 2; }
+  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .about-img-wrap { display: none; }
+  .metrics-inner { grid-template-columns: repeat(2,1fr); }
+  .testimonials-grid { grid-template-columns: 1fr 1fr; }
+  .signup-card { grid-template-columns: 1fr; padding: 48px; gap: 40px; }
+  footer { flex-direction: column; gap: 12px; text-align: center; }
+}
+
+@media (max-width: 640px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  section, .metrics-strip, .testimonials, #signup { padding: 60px 20px; }
+  #home { padding: calc(var(--nav-h) + 20px) 20px 60px; }
+  .features-grid { grid-template-columns: 1fr; }
+  .feature-card.big { grid-column: span 1; grid-template-columns: 1fr; }
+  .feature-card.big img { min-height: 180px; }
+  .metrics-inner { grid-template-columns: repeat(2,1fr); gap: 24px; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .signup-card { padding: 32px 24px; }
+  .hero-stats { flex-wrap: wrap; gap: 20px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ─── NAVBAR ─── -->
+<nav id="navbar">
+  <a href="#home" class="nav-brand">
+    <div class="nav-brand-icon">
+      <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#03070d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3689d7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <path d="M100 170 C 100 170 30 120 30 75 A 35 35 0 0 1 100 50 A 35 35 0 0 1 170 75 C 170 120 100 170 100 170 Z" 
+        fill="none" 
+        stroke="url(#heartGradient)" 
+        stroke-width="20" 
+        stroke-linejoin="round"/>
+        
+  <path d="M20 100 H 60 L 75 70 L 95 130 L 115 40 L 135 100 H 180" 
+        fill="none" 
+        stroke="#63b3ed" 
+        stroke-width="5" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+</svg>
+    </div>
+    <span class="nav-brand-name">BitStorm</span>
+    <span class="nav-brand-name2">BitStorm</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#signup">Sign Up</a></li>
+  </ul>
+
+  <a href="signupclaude.html" class="nav-cta">Get Started</a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="home">
+  <div class="hero-orb orb-1"></div>
+  <div class="hero-orb orb-2"></div>
+
+  <div class="hero-inner">
+    <div class="hero-left">
+
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span>Live Health Monitoring · Smart PPG Earpatch</span>
+      </div>
+
+      <h1 class="hero-heading">
+        Precision in<br>every <em>pulse.</em>
+      </h1>
+
+      <p class="hero-tagline">
+        BitStorm transforms raw biometric signals into clear, actionable health insights — in real time, on every heartbeat.
+      </p>
+
+      <div class="hero-actions">
+        <a href="signupclaude.html" class="btn-hero-primary">
+          Get Started Free
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+        <a href="#features" class="btn-hero-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;stroke:currentColor">
+            <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
+          </svg>
+          See How It Works
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-val">99 <span style="font-size:18px;color:var(--blue-300)">%</span></div>
+          <div class="hero-stat-label">Accuracy</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">5-10 <span style="font-size:18px;color:var(--blue-300)">s</span></div>
+          <div class="hero-stat-label">Latency</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">24<span style="font-size:18px;color:var(--blue-300)">/7</span></div>
+          <div class="hero-stat-label">Availability</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-img-wrap">
+        <img src="" alt="Health monitoring">
+        <div class="hero-img-overlay"></div>
+      </div>
+
+      <!-- Vitals floating card -->
+      <div class="vitals-card">
+        <div class="vitals-card-label">
+          <span class="vitals-live-dot"></span>
+          Live Reading
+        </div>
+        <div class="vitals-row">
+          <span class="vitals-num">72</span>
+          <span class="vitals-unit">BPM</span>
+        </div>
+        <div class="vitals-status">Normal</div>
+      </div>
+
+      <!-- SpO2 badge -->
+      <div class="spo2-badge">
+        <div class="spo2-val">98%</div>
+        <div class="spo2-label">SpO₂</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-mouse">
+      <div class="scroll-wheel"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FEATURES ─── -->
+<section id="features">
+  <div class="section-inner">
+    <div class="features-header reveal">
+      <div class="section-eyebrow">What We Offer</div>
+      <h2 class="section-heading">Built for the <em>future</em><br>of health tech</h2>
+      <p class="section-sub">Every feature of BitStorm is engineered with clinical precision and wrapped in an interface that makes health data understandable for everyone.</p>
+    </div>
+
+    <div class="features-grid">
+
+      <!-- Big card -->
+      <div class="feature-card big reveal">
+        <div class="feature-card-content">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+          <div class="feature-title">Real-Time PPG Signal Processing</div>
+          <p class="feature-desc">Our proprietary Bluetooth technology captures your PPG waveform continuously and processes Heart Rate, HRV, and SpO₂ with sub-second latency —  all on-device.</p>
+        </div>
+        <img src="https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=600&q=80&fit=crop" alt="Waveform monitoring">
+      </div>
+
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <div class="feature-title">HRV Analysis</div>
+        <p class="feature-desc">RMSSD-based heart rate variability gives you a window into your autonomic nervous system — tracking stress, recovery, and resilience in real time.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+          </svg>
+        </div>
+        <div class="feature-title">SpO₂ Saturation</div>
+        <p class="feature-desc">Continuous blood oxygen saturation monitoring with immediate alerts when levels drop below safe thresholds — keeping you informed before symptoms appear.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </div>
+        <div class="feature-title">Smart Alerts</div>
+        <p class="feature-desc">Configurable push notifications for abnormal readings — High Risk, Low, and Normal status delivered instantly to your device the moment something changes.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+        </div>
+        <div class="feature-title">Health History Log</div>
+        <p class="feature-desc">Every reading is timestamped and stored locally. Review trends and get regular glimpses about your health.</p>
+      </div>
+
+      
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── METRICS STRIP ─── -->
+<div class="metrics-strip">
+  <div class="metrics-inner">
+    <div class="metric-item reveal">
+      <div class="metric-num">1<span>+</span></div>
+      <div class="metric-label">Active Users</div>
+    </div>
+    <div class="metric-divider"></div>
+    <div class="metric-item reveal reveal-delay-1">
+      <div class="metric-num">99<span>%</span></div>
+      <div class="metric-label">Signal Accuracy</div>
+    </div>
+    <div class="metric-divider"></div>
+    <div class="metric-item reveal reveal-delay-2">
+      <div class="metric-num">0-5<span>s</span></div>
+      <div class="metric-label">Reading Latency</div>
+    </div>
+    <div class="metric-divider"></div>
+    <div class="metric-item reveal reveal-delay-3">
+      <div class="metric-num">3<span>+</span></div>
+      <div class="metric-label">Vital Metrics</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── ABOUT ─── -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+
+      <div class="about-img-wrap reveal">
+        <img class="about-img-main"
+          src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=700&q=80&fit=crop"
+          alt="Doctor reviewing health data">
+        <img class="about-img-accent"
+          src="https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=300&q=80&fit=crop"
+          alt="PPG sensor">
+      </div>
+
+      <div class="reveal reveal-delay-1">
+        <div class="section-eyebrow">How It Works</div>
+        <h2 class="section-heading">From sensor<br>to <em>insight</em></h2>
+        <p class="section-sub">BitStorm bridges the gap between clinical-grade monitoring and everyday wearability — making precision health data accessible to everyone.</p>
+
+        <div class="about-steps">
+          <div class="about-step">
+            <div class="step-num-circle">1</div>
+            <div>
+              <div class="step-title">Clip & Connect</div>
+              <p class="step-desc">Attach the BitStorm PPG sensor to your earlobe. The app pairs via Bluetooth in seconds.</p>
+            </div>
+          </div>
+          <div class="about-step">
+            <div class="step-num-circle">2</div>
+            <div>
+              <div class="step-title">Real-Time Processing</div>
+              <p class="step-desc">Our signal processing engine reads your photoplethysmography waveform and computes Heart Rate, HRV, and SpO₂ continuously — being updated every second.</p>
+            </div>
+          </div>
+          <div class="about-step">
+            <div class="step-num-circle">3</div>
+            <div>
+              <div class="step-title">Smart Insights & Alerts</div>
+              <p class="step-desc">The dashboard visualises live waveforms and flags anomalies instantly. Your full history is stored securely so you can track trends over time.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── TESTIMONIALS ─── -->
+<div class="testimonials">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-eyebrow">RECOMMENDations</div>
+      <h2 class="section-heading">What doctor's <em>say</em></h2>
+    </div>
+
+    <div class="testimonials-grid">
+
+      <div class="testimonial-card reveal reveal-delay-1">
+        <div class="stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+        <p class="testimonial-text">“The earlobe provides reliable arterial pulse detection due to consistent perfusion and reduced interference from peripheral vasoconstriction compared to extremities.”</p>
+        <div class="testimonial-author">
+          <img class="author-avatar" src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=80&q=80&fit=crop&crop=face" alt="Dr. Dr. John W. Severinghaus">
+          <div>
+            <div class="author-name">Dr. John W. Severinghaus</div>
+            <div class="author-role">Cardiologist, Apollo Hospitals</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal reveal-delay-2">
+        <div class="stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+        <p class="testimonial-text">"Compared to wrist-based sensors, the earlobe experiences less mechanical disturbance from muscle contraction and joint movement, potentially reducing motion-related signal noise."</p>
+        <div class="testimonial-author">
+          <img class="author-avatar" src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=80&q=80&fit=crop&crop=face" alt="Arjun Sharma">
+          <div>
+            <div class="author-name">Mr. XYZ</div>
+            <div class="author-role">Professional </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal reveal-delay-3">
+        <div class="stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+        <p class="testimonial-text">"Wrist-based optical sensors may be influenced by strap tension, arm swing, and variable tissue thickness, whereas the earlobe provides a thinner tissue interface and more stable perfusion environment."</p>
+        <div class="testimonial-author">
+          <img class="author-avatar" src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&q=80&fit=crop&crop=face" alt="Prof. Kavya Reddy">
+          <div>
+            <div class="author-name">Prof.ABC</div>
+            <div class="author-role">Biomedical Researcher</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─── SIGNUP CTA ─── -->
+<section id="signup">
+  <div class="signup-inner">
+    <div class="signup-card reveal">
+      <div class="signup-card-cross">+</div>
+
+      <div class="signup-left">
+        <div class="signup-eyebrow">Get Started Today</div>
+        <h2 class="signup-heading">Your heart has a<br><em>story to tell.</em><br>Start listening.</h2>
+        <p class="signup-sub">Join BitStorm for real-time, precision health monitoring. Free to start. Connect now and listen what your heart says</p>
+        <a href="signupclaude.html" class="signup-btn">
+          Create Your Free Account
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="signup-right">
+        <div class="signup-feature">
+          <div class="signup-feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="signup-feature-title">Live Heart Rate & HRV</div>
+            <div class="signup-feature-desc">Continuous BPM and RMSSD monitoring with live waveform visualisation</div>
+          </div>
+        </div>
+        <div class="signup-feature">
+          <div class="signup-feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="signup-feature-title">Blood Oxygen Tracking</div>
+            <div class="signup-feature-desc">SpO₂ saturation with instant alerts when levels fall below safe range</div>
+          </div>
+        </div>
+        <div class="signup-feature">
+          <div class="signup-feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </div>
+          <div>
+            <div class="signup-feature-title">Complete Health History</div>
+            <div class="signup-feature-desc">Timestamped records and trend analysis built in</div>
+          </div>
+        </div>
+        <div class="signup-feature">
+          <div class="signup-feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+          </div>
+          <div>
+            <div class="signup-feature-title">Smart Health Alerts</div>
+            <div class="signup-feature-desc">Configurable push notifications, delivered in real time</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-brand">
+    <div class="footer-brand-icon">
+      <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#03070d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3689d7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <path d="M100 170 C 100 170 30 120 30 75 A 35 35 0 0 1 100 50 A 35 35 0 0 1 170 75 C 170 120 100 170 100 170 Z" 
+        fill="none" 
+        stroke="url(#heartGradient)" 
+        stroke-width="20" 
+        stroke-linejoin="round"/>
+        
+  <path d="M20 100 H 60 L 75 70 L 95 130 L 115 40 L 135 100 H 180" 
+        fill="none" 
+        stroke="#63b3ed" 
+        stroke-width="5" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+</svg>
+    </div>
+    <span class="footer-brand-name">BitStorm</span>
+  </div>
+  <div class="footer-tagline">Let's listen what our heart speaks</div>
+  <div class="footer-copy">© 2025 BitStorm.</div>
+</footer>
+
+<script>
+// ── Navbar scroll effect ──
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// ── Scroll reveal ──
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+reveals.forEach(el => observer.observe(el));
+
+// ── Smooth nav link scroll ──
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
