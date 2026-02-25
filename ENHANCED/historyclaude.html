@@ -1,0 +1,699 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BitStorm — Health History</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Playfair+Display:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --blue-900: #0c2340;
+  --blue-800: #123a6b;
+  --blue-700: #174f96;
+  --blue-600: #1a5fa8;
+  --blue-400: #3b8fd4;
+  --blue-200: #b8d8f5;
+  --blue-100: #dceefb;
+  --blue-50:  #f0f7fd;
+  --white:    #ffffff;
+  --text-primary: #0d1f35;
+  --text-secondary: #4a6785;
+  --text-muted: #8aabca;
+  --border: #d0e4f4;
+  --sidebar-w: 240px;
+  --nav-h: 64px;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--blue-50);
+  color: var(--text-primary);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: var(--blue-800);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.04);
+  bottom: -80px; right: -120px;
+  pointer-events: none;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+
+
+.brand-icon svg { width: 60px; height: 60px; stroke: var(--white); }
+.brand-name { font-size: 20px; font-weight: 600; color: var(--white); letter-spacing: 0.02em; }
+
+.sidebar-nav {
+  flex: 1;
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.15s;
+  color: rgba(255,255,255,0.5);
+  font-size: 13.5px;
+  font-weight: 400;
+  border: none; background: none; width: 100%; text-align: left;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.nav-item svg { width: 16px; height: 16px; stroke: currentColor; flex-shrink: 0; }
+.nav-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.8); }
+.nav-item.active { background: rgba(255,255,255,0.12); color: var(--white); font-weight: 500; }
+
+.nav-section-label {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  padding: 14px 12px 6px;
+  font-weight: 500;
+}
+
+.sidebar-footer {
+  padding: 16px 14px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.connect-btn {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 9px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.07);
+  color: var(--white);
+  font-size: 13px; font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.connect-btn svg { width: 15px; height: 15px; stroke: var(--blue-200); }
+.connect-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); }
+.conn-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); margin-left: auto; flex-shrink: 0; }
+
+/* ── Main ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Topbar */
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 32px;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0; z-index: 50;
+}
+
+.topbar-left h1 { font-size: 17px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.01em; }
+.topbar-left p  { font-size: 12px; color: var(--text-muted); font-weight: 300; }
+.topbar-right   { display: flex; align-items: center; gap: 14px; }
+
+.time-badge {
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: var(--blue-50);
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 400;
+}
+
+/* Content */
+.content { padding: 28px 32px 40px; flex: 1; }
+
+/* Greeting */
+.greeting {
+  margin-bottom: 28px;
+  animation: fadeSlideIn 0.6s ease both;
+}
+
+.greeting h2 {
+  font-size: 22px; font-weight: 600;
+  color: var(--text-primary); letter-spacing: -0.02em;
+}
+
+.greeting h2 em {
+  font-style: italic;
+  color: var(--blue-600);
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+}
+
+.greeting p { font-size: 13.5px; color: var(--text-secondary); margin-top: 3px; font-weight: 300; }
+
+/* Section label */
+.section-label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* Stat boxes */
+.stat-boxes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+  animation: fadeSlideIn 0.5s ease 0.05s both;
+}
+
+.stat-box {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.stat-box:hover { box-shadow: 0 6px 20px rgba(26,95,168,0.1); transform: translateY(-2px); }
+
+.stat-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--blue-400);
+  border-radius: 3px 0 0 3px;
+}
+
+.stat-box.s-green::before  { background: #22c55e; }
+.stat-box.s-red::before    { background: #ef4444; }
+.stat-box.s-orange::before { background: #f97316; }
+
+.stat-val {
+  font-size: 26px; font-weight: 600;
+  color: var(--blue-800); letter-spacing: -0.03em; line-height: 1;
+}
+
+.stat-box.s-green  .stat-val { color: #15803d; }
+.stat-box.s-red    .stat-val { color: #b91c1c; }
+.stat-box.s-orange .stat-val { color: #c2410c; }
+
+.stat-key {
+  font-size: 11px; color: var(--text-muted);
+  font-weight: 400; margin-top: 5px;
+  text-transform: uppercase; letter-spacing: 0.07em;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 16px; flex-wrap: wrap;
+  animation: fadeSlideIn 0.5s ease 0.1s both;
+}
+
+.filter-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filter-btn:hover { border-color: var(--blue-400); color: var(--blue-600); }
+.filter-btn.active { background: var(--blue-800); border-color: var(--blue-800); color: var(--white); }
+
+.toolbar-spacer { flex: 1; }
+
+.action-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.15s;
+}
+
+.action-btn svg { width: 13px; height: 13px; stroke: currentColor; }
+.action-btn:hover { border-color: var(--blue-400); color: var(--blue-600); box-shadow: 0 2px 8px rgba(26,95,168,0.1); }
+.action-btn.danger:hover { border-color: #fca5a5; color: #b91c1c; box-shadow: 0 2px 8px rgba(239,68,68,0.1); }
+
+/* Table card */
+.table-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(26,95,168,0.05);
+  animation: fadeSlideIn 0.5s ease 0.15s both;
+}
+
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; min-width: 620px; }
+
+thead {
+  background: var(--blue-50);
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 12px 18px; text-align: left;
+  white-space: nowrap;
+}
+
+th:first-child { width: 52px; text-align: center; }
+
+tbody tr {
+  border-bottom: 1px solid var(--blue-50);
+  transition: background 0.12s;
+  animation: fadeSlideIn 0.35s ease both;
+}
+
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--blue-50); }
+
+td { padding: 14px 18px; font-size: 13.5px; color: var(--text-primary); }
+td:first-child { text-align: center; font-size: 11px; color: var(--text-muted); }
+
+.td-date { color: var(--text-secondary); font-size: 13px; }
+.td-time { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-muted); }
+.td-metric { font-weight: 600; color: var(--blue-800); font-variant-numeric: tabular-nums; }
+.td-unit { font-size: 11px; color: var(--text-muted); font-weight: 400; margin-left: 2px; }
+
+/* Badges */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 500;
+  padding: 4px 10px; border-radius: 20px;
+  white-space: nowrap;
+}
+
+.badge::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.badge-normal { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+.badge-high   { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+.badge-low    { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+
+/* Empty state */
+.empty-state { text-align: center; padding: 72px 24px; display: none; }
+.empty-state.visible { display: block; }
+
+.empty-icon {
+  width: 52px; height: 52px;
+  background: var(--blue-50);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.empty-icon svg { width: 22px; height: 22px; stroke: var(--text-muted); }
+.empty-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+.empty-sub   { font-size: 13px; color: var(--text-muted); font-weight: 300; }
+
+/* Table footer */
+.table-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 18px;
+  border-top: 1px solid var(--border);
+  background: var(--blue-50);
+}
+
+.table-footer-info { font-size: 12px; color: var(--text-muted); font-weight: 300; }
+.table-footer-info strong { color: var(--text-secondary); font-weight: 600; }
+
+/* Section divider */
+.section-divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+/* Quote strip */
+.quote-strip {
+  background: var(--blue-50);
+  border-left: 3px solid var(--blue-200);
+  border-radius: 0 10px 10px 0;
+  padding: 12px 18px;
+  animation: fadeSlideIn 0.5s ease 0.2s both;
+}
+
+.quote-strip p {
+  font-size: 12.5px; color: var(--text-secondary);
+  font-style: italic; line-height: 1.6; font-weight: 300;
+}
+
+.quote-strip cite {
+  font-size: 11px; color: var(--text-muted);
+  font-style: normal; font-weight: 500;
+  display: block; margin-top: 4px;
+}
+
+/* Animation */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+tbody tr:nth-child(1)  { animation-delay: 0.05s; }
+tbody tr:nth-child(2)  { animation-delay: 0.08s; }
+tbody tr:nth-child(3)  { animation-delay: 0.11s; }
+tbody tr:nth-child(4)  { animation-delay: 0.14s; }
+tbody tr:nth-child(5)  { animation-delay: 0.17s; }
+tbody tr:nth-child(6)  { animation-delay: 0.20s; }
+tbody tr:nth-child(7)  { animation-delay: 0.23s; }
+tbody tr:nth-child(8)  { animation-delay: 0.26s; }
+tbody tr:nth-child(9)  { animation-delay: 0.29s; }
+tbody tr:nth-child(10) { animation-delay: 0.32s; }
+
+/* Responsive */
+@media (max-width: 960px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .stat-boxes { grid-template-columns: repeat(2, 1fr); }
+  .content { padding: 20px 16px 32px; }
+  .topbar { padding: 0 16px; }
+}
+
+@media (max-width: 540px) {
+  .stat-boxes { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stat-val { font-size: 20px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">
+     <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#03070d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3689d7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <path d="M100 170 C 100 170 30 120 30 75 A 35 35 0 0 1 100 50 A 35 35 0 0 1 170 75 C 170 120 100 170 100 170 Z" 
+        fill="none" 
+        stroke="url(#heartGradient)" 
+        stroke-width="20" 
+        stroke-linejoin="round"/>
+        
+  <path d="M20 100 H 60 L 75 70 L 95 130 L 115 40 L 135 100 H 180" 
+        fill="none" 
+        stroke="#63b3ed" 
+        stroke-width="5" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+</svg>
+    </div>
+    <span class="brand-name">BitStorm</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Monitor</div>
+    <button class="nav-item" onclick="showhome()">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+      </svg>
+      Dashboard
+    </button>
+    <button class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      Health History
+    </button>
+
+    <div class="nav-section-label">Account</div>
+    <button class="nav-item" onclick="showprofile()">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+      My Profile
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="connect-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 6a6 6 0 0 1 6 6"/><path d="M12 10a2 2 0 0 1 2 2"/>
+        <circle cx="4.5" cy="18.5" r="2.5"/>
+      </svg>
+      Connect Device
+      <span class="conn-dot"></span>
+    </button>
+  </div>
+</aside>
+
+<!-- ── Main ── -->
+<div class="main">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1>Health History</h1>
+      <p>All recorded vitals &amp; readings</p>
+    </div>
+    <div class="topbar-right">
+      <div class="time-badge" id="clockBadge">--:-- --</div>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <div class="greeting">
+      <h2>Your <em>Vitals</em> Log</h2>
+      <p>A complete record of all health readings captured by BitStorm.</p>
+    </div>
+
+    <!-- Summary stats -->
+    <div class="stat-boxes">
+      <div class="stat-box">
+        <div class="stat-val" id="statTotal">—</div>
+        <div class="stat-key">Total Records</div>
+      </div>
+      <div class="stat-box s-green">
+        <div class="stat-val" id="statNormal">—</div>
+        <div class="stat-key">Normal</div>
+      </div>
+      <div class="stat-box s-red">
+        <div class="stat-val" id="statHigh">—</div>
+        <div class="stat-key">High Risk</div>
+      </div>
+      <div class="stat-box s-orange">
+        <div class="stat-val" id="statLow">—</div>
+        <div class="stat-key">Low</div>
+      </div>
+    </div>
+
+    <div class="section-label">All Readings</div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+      <button class="filter-btn" onclick="setFilter('Normal', this)">Normal</button>
+      <button class="filter-btn" onclick="setFilter('High Risk', this)">High Risk</button>
+      <button class="filter-btn" onclick="setFilter('Low', this)">Low</button>
+      <div class="toolbar-spacer"></div>
+      
+      <button class="action-btn danger" onclick="clearHistory()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+          <path d="M10 11v6"/><path d="M14 11v6"/>
+          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+        </svg>
+        Clear History
+      </button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>S.No.</th>
+              <th>Date Stamp</th>
+              <th>Time Stamp</th>
+              <th>Heart Rate (BPM)</th>
+              <th>HRV (ms)</th>
+              <th>SpO₂ (%)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="historyTable"></tbody>
+        </table>
+      </div>
+
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <div class="empty-title">No Records Found</div>
+        <div class="empty-sub">Health data will appear here once measurements are recorded.</div>
+      </div>
+
+      <div class="table-footer">
+        <span class="table-footer-info" id="footerInfo">Showing <strong>1</strong> records</span>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="quote-strip">
+      <p>"Tracking your vitals over time gives you and your doctor valuable insight into patterns that a single reading can never reveal."</p>
+      <cite>— Harvard Health Publishing</cite>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── Clock ──
+function updateClock() {
+  document.getElementById('clockBadge').textContent =
+    new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+updateClock(); setInterval(updateClock, 1000);
+
+// ── State ──
+let allHistory = [];
+
+// ── Load ──
+function loadHistory() {
+  allHistory = JSON.parse(localStorage.getItem("healthHistory")) || [];
+  updateStats();
+  renderTable(allHistory);
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent  = allHistory.length;
+  document.getElementById('statNormal').textContent = allHistory.filter(r => r.status === 'Normal').length;
+  document.getElementById('statHigh').textContent   = allHistory.filter(r => r.status === 'High Risk').length;
+  document.getElementById('statLow').textContent    = allHistory.filter(r => r.status === 'Low').length;
+}
+
+function renderTable(records) {
+  const table  = document.getElementById("historyTable");
+  const empty  = document.getElementById("emptyState");
+  const footer = document.getElementById("footerInfo");
+
+  table.innerHTML = "";
+
+  if (!records.length) {
+    empty.classList.add("visible");
+    footer.innerHTML = 'Showing <strong>0</strong> records';
+    return;
+  }
+
+  empty.classList.remove("visible");
+  footer.innerHTML = `Showing <strong>${records.length}</strong> of <strong>${allHistory.length}</strong> records`;
+
+  records.forEach((record, index) => {
+    const badgeClass = record.status === "High Risk" ? "badge-high"
+                     : record.status === "Low"       ? "badge-low"
+                     : "badge-normal";
+
+    const row = `
+      <tr>
+        <td>${index + 1}</td>
+        <td class="td-date">${record.date}</td>
+        <td class="td-time">${record.time}</td>
+        <td><span class="td-metric">${record.heartRate}</span><span class="td-unit">bpm</span></td>
+        <td><span class="td-metric">${record.hrv ? record.hrv : "—"}</span>${record.hrv ? '<span class="td-unit">ms</span>' : ''}</td>
+        <td><span class="td-metric">${record.spo2}</span><span class="td-unit">%</span></td>
+        <td><span class="badge ${badgeClass}">${record.status}</span></td>
+      </tr>`;
+    table.innerHTML += row;
+  });
+}
+
+function setFilter(filter, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable(filter === 'all' ? allHistory : allHistory.filter(r => r.status === filter));
+}
+
+function clearHistory() {
+  localStorage.removeItem("healthHistory");
+  loadHistory();
+}
+
+
+function showhistory() { window.location.href = "historyclaude.html"; }
+function showhome()    { window.location.href = "homepageclaude.html"; }
+function showprofile() { window.location.href = "profileclaude.html"; }
+
+loadHistory();
+</script>
+
+</body>
+</html>
