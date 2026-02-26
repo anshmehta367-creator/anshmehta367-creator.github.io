@@ -721,41 +721,65 @@ async function connectDevice() {
   }
 }
 
-let rrIntervals = [];
+let rrIntervals = [];   // RR intervals in ms
+let lastBeatTime = null;
 
 function handleData(event) {
-    const decoder = new TextDecoder();
-    const rawData = decoder.decode(event.target.value).trim();
+  const decoder = new TextDecoder();
+  const rawData = decoder.decode(event.target.value).trim();
 
-    console.log("Raw BLE Data:", rawData);
+  try {
+    const parsed = JSON.parse(rawData);
 
-    try {
-        const parsed = JSON.parse(rawData);
+    const heartRate = Number(parsed.hr);
+    const spo2Value = Number(parsed.spo2);
+    const irValue   = Number(parsed.ir);
 
-        const heartRate = Number(parsed.hr);
-        const spo2Value = Number(parsed.spo2);
+    if (isNaN(heartRate)) return;
 
-        if (isNaN(heartRate) || isNaN(spo2Value)) {
-            console.error("Invalid values received");
-            return;
-        }
+    // UI update
+    document.getElementById("heartRate").innerText = heartRate;
+    document.getElementById("spo2").innerText = spo2Value;
 
-        document.getElementById("heartRate").innerText = heartRate;
-        document.getElementById("spo2").innerText = spo2Value;
-
-        checkAlerts(heartRate, spo2Value);
-        drawECGWave();
-        drawSpO2Wave();
-
-        saveToHistory(heartRate, spo2Value);
-
-    } catch (e) {
-        console.error("JSON Parse Error:", e);
+    // ── ECG waveform (REAL) ──
+    if (!isNaN(irValue)) {
+      irBuffer.push(irValue);
+      if (irBuffer.length > MAX_POINTS) irBuffer.shift();
+      drawECGWave();
     }
+
+    // ── REAL RR INTERVAL CALCULATION ──
+    const now = performance.now(); // high precision timer
+
+    if (lastBeatTime !== null) {
+      const rr = now - lastBeatTime; // RR in ms
+
+      if (rr > 300 && rr < 2000) {   // valid human range
+        rrIntervals.push(rr);
+        if (rrIntervals.length > 30) rrIntervals.shift();
+
+        const rmssd = calculateRMSSD(rrIntervals);
+        document.getElementById("hrv").innerText = rmssd.toFixed(1);
+
+        updateHRVStatus(rmssd);
+        drawHRVWave(rmssd);   // 🔥 REAL HRV WAVE
+      }
+    }
+    lastBeatTime = now;
+
+    checkAlerts(heartRate, spo2Value);
+    drawSpO2Wave();
+    saveToHistory(heartRate, spo2Value, calculateRMSSD(rrIntervals));
+
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 
 // ── Canvas setup ──
+let irBuffer = [];
+const MAX_POINTS = 300;
 function setupCanvas(id) {
   const c = document.getElementById(id);
   c.width = c.parentElement.offsetWidth - 40;
@@ -775,15 +799,25 @@ function clearCanvas(ctx, c) {
 }
 
 function drawECGWave() {
+  if (irBuffer.length < 5) return;
+
   clearCanvas(heartCtx, heartCanvas);
-  heartCtx.strokeStyle = '#123a6b'; heartCtx.lineWidth = 1.8; heartCtx.beginPath();
-  for (let i = 0; i < heartCanvas.width; i++) {
-    let y = 70;
-    const m = i % 120;
-    if (m < 5) y = 70; else if (m < 15) y = 42; else if (m < 20) y = 105;
-    else if (m < 25) y = 20; else if (m < 30) y = 100; else if (m < 45) y = 62; else y = 70;
-    i === 0 ? heartCtx.moveTo(i, y) : heartCtx.lineTo(i, y);
-  }
+  heartCtx.strokeStyle = '#123a6b';
+  heartCtx.lineWidth = 1.8;
+  heartCtx.beginPath();
+
+  const max = Math.max(...irBuffer);
+  const min = Math.min(...irBuffer);
+
+  irBuffer.forEach((val, i) => {
+    const x = (i / irBuffer.length) * heartCanvas.width;
+    const y =
+      heartCanvas.height -
+      ((val - min) / (max - min)) * heartCanvas.height;
+
+    i === 0 ? heartCtx.moveTo(x, y) : heartCtx.lineTo(x, y);
+  });
+
   heartCtx.stroke();
 }
 
@@ -796,12 +830,28 @@ function drawSpO2Wave() {
   }
   spo2Ctx.stroke();
 }
+function updateHRVStatus(hrv) {
+  const el = document.getElementById("hrvStatus");
 
+  if (hrv > 50) {
+    el.className = "metric-status normal";
+    el.innerHTML = '<span class="dot"></span> Good HRV';
+  } else if (hrv > 30) {
+    el.className = "metric-status warning";
+    el.innerHTML = '<span class="dot"></span> Moderate HRV';
+  } else {
+    el.className = "metric-status warning";
+    el.innerHTML = '<span class="dot"></span> Low HRV';
+  }
+}
 function drawHRVWave(value) {
   clearCanvas(hrvCtx, hrvCanvas);
-  hrvCtx.strokeStyle = '#3b8fd4'; hrvCtx.lineWidth = 1.8; hrvCtx.beginPath();
+  hrvCtx.strokeStyle = '#3b8fd4';
+  hrvCtx.lineWidth = 1.8;
+  hrvCtx.beginPath();
+
   for (let i = 0; i < hrvCanvas.width; i++) {
-    const y = 70 + (value / 5) * Math.sin(i * 0.05);
+    const y = 70 + (value / 4) * Math.sin(i * 0.05);
     i === 0 ? hrvCtx.moveTo(i, y) : hrvCtx.lineTo(i, y);
   }
   hrvCtx.stroke();
@@ -830,7 +880,8 @@ function showhome()    { window.location.href = 'homepageclaude.html'; }
 function showprofile() { window.location.href = 'profileclaude.html'; }
 
 // Initial placeholder waves
-drawECGWave(); drawSpO2Wave(); drawHRVWave(40);
+drawSpO2Wave();
+drawHRVWave(40);
 
 // Handle resize
 window.addEventListener('resize', () => {
@@ -838,9 +889,11 @@ window.addEventListener('resize', () => {
     c.width = c.parentElement.offsetWidth - 40;
     c.height = 140;
   });
-  drawECGWave(); drawSpO2Wave(); drawHRVWave(40);
+  if (irBuffer.length > 5) drawECGWave();
+drawSpO2Wave();
+drawHRVWave(40);
 });
 </script>
 
 </body>
-</html>     
+</html>
